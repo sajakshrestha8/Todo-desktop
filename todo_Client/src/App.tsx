@@ -1,28 +1,25 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+// import { useEffect } from "react";
 import AddTask from "./Components/AddTask";
+import Tasks from "./Components/Tasks";
 
 function App() {
-  const [message, setMessage] = useState("");
-  const [res, setRes] = useState("");
 
-  const getData = async () => {
-    try {
-      const response = await axios.get("http://localhost:8001/apiTest");
-      setRes(response.data);
-      console.log("REST API response:", response.data);
-    } catch (err) {
-      console.error("API error:", err);
-    }
-  };
+  // const getData = async () => {
+  //   try {
+  //     const response = await axios.get("http://localhost:8001/apiTest");
+  //     console.log("REST API response:", response.data);
+  //   } catch (err) {
+  //     console.error("API error:", err);
+  //   }
+  // };
 
-  useEffect(() => {
-    getData();
+  // useEffect(() => {
+  //   getData();
 
-    if (window.electronAPI) {
-      window.electronAPI.ping().then(setMessage);
-    }
-  }, []);
+  //   if (window.electronAPI) {
+  //     window.electronAPI.ping().then(setMessage);
+  //   }
+  // }, []);
 
   return (
     <div
@@ -58,21 +55,22 @@ function App() {
 
       <div
         style={{
-          marginTop: "20px",
+          width: "100%",
+          maxWidth: "600px",
           backgroundColor: "#FFFFFF",
-          padding: "12px 20px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+          padding: "16px",
+          borderRadius: "12px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
           fontSize: "14px",
           color: "#374151",
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+          maxHeight: "400px",
+          overflowY: "auto",
         }}
       >
-        <p style={{ margin: 0 }}>
-          <strong>IPC says:</strong> {message || "Waiting..."}
-        </p>
-        <p style={{ margin: "4px 0 0 0" }}>
-          <strong>API:</strong> {res || "Fetching..."}
-        </p>
+        <Tasks task="Hello" priority="Medium" />
       </div>
     </div>
   );
