@@ -1,11 +1,20 @@
+require("dotenv").config({ path: __dirname + ".env" });
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const express = require("express");
 
 const appApi = express();
 const cors = require("cors");
+const dbConnection = require("./dbConnection/connection");
 
 appApi.use(cors());
+
+dbConnection
+  .authenticate()
+  .then(() => console.log("connected"))
+  .catch((err) => console.error("DB error", err));
+
+dbConnection.sync({ force: true });
 
 appApi.get("/apiTest", (req, res) => res.send("hello testing from the server"));
 appApi.listen(8001, () => console.log("Server running on 8001"));

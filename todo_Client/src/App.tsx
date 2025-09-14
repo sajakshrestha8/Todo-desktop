@@ -1,26 +1,7 @@
-// import { useEffect } from "react";
 import AddTask from "./Components/AddTask";
 import Tasks from "./Components/Tasks";
 
 function App() {
-
-  // const getData = async () => {
-  //   try {
-  //     const response = await axios.get("http://localhost:8001/apiTest");
-  //     console.log("REST API response:", response.data);
-  //   } catch (err) {
-  //     console.error("API error:", err);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   getData();
-
-  //   if (window.electronAPI) {
-  //     window.electronAPI.ping().then(setMessage);
-  //   }
-  // }, []);
-
   return (
     <div
       style={{
@@ -39,7 +20,7 @@ function App() {
             fontSize: "36px",
             fontWeight: 800,
             color: "#111827",
-            margin: "0",
+            margin: 0,
           }}
         >
           Task Management
@@ -57,12 +38,10 @@ function App() {
         style={{
           width: "100%",
           maxWidth: "600px",
-          backgroundColor: "#FFFFFF",
+          backgroundColor: "#FFF",
           padding: "16px",
           borderRadius: "12px",
           boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          fontSize: "14px",
-          color: "#374151",
           display: "flex",
           flexDirection: "column",
           gap: "12px",
@@ -70,7 +49,19 @@ function App() {
           overflowY: "auto",
         }}
       >
-        <Tasks task="Hello" priority="Medium" />
+        <Tasks
+          title="Finish frontend integration"
+          description="Connect the AddTask form to backend API"
+          priority="High"
+          status="In Progress"
+          dueDate="2025-09-20"
+        />
+        <Tasks
+          title="Write documentation"
+          description="Update README and API docs"
+          priority="Medium"
+          status="Pending"
+        />
       </div>
     </div>
   );
