@@ -11,6 +11,8 @@ const dbConnection = require("./dbConnection/connection");
 appApi.use(cors());
 appApi.use("/api", route);
 
+
+
 dbConnection
   .authenticate()
   .then(() => console.log("connected"))
