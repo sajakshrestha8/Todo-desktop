@@ -28,7 +28,6 @@ const AddTask = () => {
         gap: "20px",
       }}
     >
-      {/* Title */}
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
         <label style={{ fontWeight: 600 }}>Task Title</label>
         <input
@@ -46,7 +45,6 @@ const AddTask = () => {
         />
       </div>
 
-      {/* Description */}
       <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
         <label style={{ fontWeight: 600 }}>Description</label>
         <textarea
@@ -65,7 +63,6 @@ const AddTask = () => {
         />
       </div>
 
-      {/* Priority / Status / Due */}
       <div
         style={{
           display: "grid",
@@ -128,7 +125,6 @@ const AddTask = () => {
         </div>
       </div>
 
-      {/* Button */}
       <Button label="+ Add Task" variant="primary" onClick={handleAdd} />
     </div>
   );

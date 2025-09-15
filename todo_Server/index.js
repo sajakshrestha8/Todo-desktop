@@ -2,12 +2,14 @@ require("dotenv").config({ path: __dirname + ".env" });
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const express = require("express");
+const route = require("./routes/index");
 
 const appApi = express();
 const cors = require("cors");
 const dbConnection = require("./dbConnection/connection");
 
 appApi.use(cors());
+appApi.use("/api", route);
 
 dbConnection
   .authenticate()
