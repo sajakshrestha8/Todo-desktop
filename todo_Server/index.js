@@ -9,9 +9,8 @@ const cors = require("cors");
 const dbConnection = require("./dbConnection/connection");
 
 appApi.use(cors());
+appApi.use(express.json());
 appApi.use("/api", route);
-
-
 
 dbConnection
   .authenticate()
