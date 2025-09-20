@@ -17,7 +17,7 @@ dbConnection
   .then(() => console.log("connected"))
   .catch((err) => console.error("DB error", err));
 
-dbConnection.sync({ force: true });
+dbConnection.sync();
 
 appApi.get("/apiTest", (req, res) => res.send("hello testing from the server"));
 appApi.listen(8001, () => console.log("Server running on 8001"));

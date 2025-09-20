@@ -1,7 +1,21 @@
+import { useEffect, useState } from "react";
 import AddTask from "./Components/AddTask";
 import Tasks from "./Components/Tasks";
+import { taskService } from "./services/tasks.service";
+import { ITasks } from "./types/tasks.interface";
 
 function App() {
+  const [tasks, setTasks] = useState<ITasks[] | null>(null);
+
+  const getAllTasks = async() => {
+    const data = await taskService.getAllTasks();
+    setTasks(data);
+  };
+
+  useEffect(() => {
+    getAllTasks();
+  }, []);
+
   return (
     <div
       style={{
@@ -49,19 +63,15 @@ function App() {
           overflowY: "auto",
         }}
       >
-        <Tasks
-          title="Finish frontend integration"
-          description="Connect the AddTask form to backend API"
-          priority="High"
-          status="In Progress"
-          dueDate="2025-09-20"
-        />
-        <Tasks
-          title="Write documentation"
-          description="Update README and API docs"
-          priority="Medium"
-          status="Pending"
-        />
+        {tasks?.map((value) => {
+          return <Tasks
+            title={value.title}
+            description={value.description}
+            priority={value.priority}
+            status={value.status}
+            dueDate={value.dueDate}
+          />;
+        })}
       </div>
     </div>
   );
