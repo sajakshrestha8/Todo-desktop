@@ -45,7 +45,7 @@ function App() {
       </div>
 
       <div style={{ width: "100%", maxWidth: "600px", marginBottom: "32px" }}>
-        <AddTask />
+        <AddTask onAddedTask={getAllTasks} />
       </div>
 
       <div

@@ -1,17 +1,33 @@
 import { useState } from "react";
 import Button from "./Button";
+import { taskService } from "../services/tasks.service";
 
-const AddTask = () => {
+const AddTask = ({ onAddedTask }:{ onAddedTask: () => void }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"High" | "Medium" | "Low" | "">("");
+  const [priority, setPriority] = useState<"High" | "Medium" | "Low" | "">("High");
   const [status, setStatus] = useState<
     "Pending" | "In Progress" | "Completed" | "Blocked"
   >("Pending");
   const [dueDate, setDueDate] = useState("");
 
-  const handleAdd = () => {
-    console.log({ title, description, priority, status, dueDate });
+  const handleAdd = async () => {
+    const addTask = await taskService.addTasks({
+      title,
+      description,
+      priority,
+      status,
+      dueDate,
+    });
+
+    setTitle("");
+    setDescription("");
+    setPriority("High");
+    setStatus("Pending");
+    setDueDate("");
+
+    console.log(addTask);
+    onAddedTask();
   };
 
   return (
