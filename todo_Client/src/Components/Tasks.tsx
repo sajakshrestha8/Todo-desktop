@@ -8,7 +8,7 @@ interface TasksProps {
   status: string;
   dueDate?: string;
   onDelete?: () => void;
-  onEdit?: () => void;
+  onEdit: () => void;
 }
 
 function Tasks({

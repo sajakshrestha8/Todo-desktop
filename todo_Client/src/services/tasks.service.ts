@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
 import axiosInstance from "../api/Interceptor"
-import { ITasks } from "../types/tasks.interface";
+import { ITasks, IUpdateTasks } from "../types/tasks.interface";
 
 export const taskService = {
   getAllTasks: async () => {
@@ -34,4 +34,13 @@ export const taskService = {
       console.log(error);
     }
   },
+
+  updateTask: async ({ id, formData }: {id: number, formData: IUpdateTasks}) => {
+    try {
+      const response = await axiosInstance.put(`task/updatetasks/${id}`, formData);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };

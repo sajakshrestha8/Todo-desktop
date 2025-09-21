@@ -3,14 +3,22 @@ import AddTask from "./Components/AddTask";
 import Tasks from "./Components/Tasks";
 import { taskService } from "./services/tasks.service";
 import { ITasks } from "./types/tasks.interface";
+import EditModal from "./Components/EditModal";
 
 function App() {
   const [tasks, setTasks] = useState<ITasks[] | null>(null);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
+  const [selectedTask, setSelectedTask] = useState<ITasks | null>(null);
 
   const getAllTasks = async() => {
     const data = await taskService.getAllTasks();
     setTasks(data);
   };
+
+  const handleOnEdit = (task: ITasks) => {
+    setSelectedTask(task);
+    setShowEditModal(true);
+  }
 
   useEffect(() => {
     getAllTasks();
@@ -64,14 +72,24 @@ function App() {
         }}
       >
         {tasks?.map((value) => {
-          return <Tasks
-            title={value.title}
-            description={value.description}
-            priority={value.priority}
-            status={value.status}
-            dueDate={value.dueDate}
-          />;
+          return (
+            <Tasks
+              title={value.title}
+              description={value.description}
+              priority={value.priority}
+              status={value.status}
+              dueDate={value.dueDate}
+              onEdit={() => handleOnEdit(value)}
+            />
+          );
         })}
+        {showEditModal && selectedTask !== null && (
+          <EditModal
+            task={selectedTask}
+            onClose={() => setShowEditModal(false)}
+            onUpdatedTask={getAllTasks}
+          />
+        )}
       </div>
     </div>
   );

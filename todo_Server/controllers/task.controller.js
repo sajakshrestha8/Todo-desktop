@@ -36,7 +36,8 @@ const TaskController = {
   EditTask: async (req, res) => {
     try {
       const { id } = await req.params;
-      console.log(id);
+
+      if(!id) return;
 
       const { title, description, priority, status, dueDate } = await req.body;
 
@@ -44,7 +45,7 @@ const TaskController = {
         return res.status(400).json({ message: "All fields are required." });
       }
 
-      const updatedTask = Task.update(
+      const updatedTask = await Task.update(
         {
           title,
           description,
