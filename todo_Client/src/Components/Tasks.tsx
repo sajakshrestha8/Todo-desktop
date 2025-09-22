@@ -7,7 +7,7 @@ interface TasksProps {
   priority: string;
   status: string;
   dueDate?: string;
-  onDelete?: () => void;
+  onDelete: () => void;
   onEdit: () => void;
 }
 

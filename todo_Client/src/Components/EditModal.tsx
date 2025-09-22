@@ -26,9 +26,14 @@ function EditModal({ task, onClose, onUpdatedTask }: EditModalProps) {
   };
 
   const handleSave = async () => {
-    await taskService.updateTask({id: task.id, formData});
-    onUpdatedTask();
-    onClose();
+    try {
+      const updatedTask = await taskService.updateTask({ id: task.id, formData });
+      console.log(updatedTask);
+      onUpdatedTask();
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

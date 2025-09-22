@@ -4,11 +4,13 @@ import Tasks from "./Components/Tasks";
 import { taskService } from "./services/tasks.service";
 import { ITasks } from "./types/tasks.interface";
 import EditModal from "./Components/EditModal";
+import ConfirmModal from "./Components/ConfirmModal";
 
 function App() {
   const [tasks, setTasks] = useState<ITasks[] | null>(null);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<ITasks | null>(null);
+  const [delteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
 
   const getAllTasks = async() => {
     const data = await taskService.getAllTasks();
@@ -18,6 +20,13 @@ function App() {
   const handleOnEdit = (task: ITasks) => {
     setSelectedTask(task);
     setShowEditModal(true);
+  }
+
+  const handleOnDelete = async (id: number) => {
+    await taskService.deleteTask({ id });
+    setDeleteConfirmModal(false);
+    setDeleteConfirmModal(false);
+    getAllTasks();
   }
 
   useEffect(() => {
@@ -80,9 +89,20 @@ function App() {
               status={value.status}
               dueDate={value.dueDate}
               onEdit={() => handleOnEdit(value)}
+              onDelete={() => {
+                setDeleteConfirmModal(true);
+                setSelectedTask(value);
+              }}
             />
           );
         })}
+        {delteConfirmModal && selectedTask && (
+          <ConfirmModal
+            isOpen={delteConfirmModal}
+            onConfirm={() => handleOnDelete(selectedTask.id)}
+            onCancel={() => setDeleteConfirmModal(false)}
+          />
+        )}
         {showEditModal && selectedTask !== null && (
           <EditModal
             task={selectedTask}

@@ -42,5 +42,14 @@ export const taskService = {
     } catch (error) {
       console.log(error);
     }
+  },
+
+  deleteTask: async ({ id }: { id: number; }) => {
+    try {
+      const response = await axiosInstance.delete(`task/deletetasks/${id}`);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 };
