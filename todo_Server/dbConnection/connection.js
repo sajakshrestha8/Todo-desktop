@@ -2,10 +2,10 @@ const { Sequelize } = require("sequelize");
 
 const dbConnectin = new Sequelize(
   "task_Management",
-  "root@localhost",
+  "root",
   "sajak",
   {
-    host: "172.25.231.110",
+    host: "localhost",
     dialect: "mysql",
     port: 3306,
     logging: true,

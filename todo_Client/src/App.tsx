@@ -5,14 +5,16 @@ import { taskService } from "./services/tasks.service";
 import { ITasks } from "./types/tasks.interface";
 import EditModal from "./Components/EditModal";
 import ConfirmModal from "./Components/ConfirmModal";
+import { StatsCard } from "./Components/DashCard";
+import { TestTube } from "lucide-react";
 
 function App() {
   const [tasks, setTasks] = useState<ITasks[] | null>(null);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<ITasks | null>(null);
-  const [delteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
 
-  const getAllTasks = async() => {
+  const getAllTasks = async () => {
     const data = await taskService.getAllTasks();
     setTasks(data);
   };
@@ -20,90 +22,68 @@ function App() {
   const handleOnEdit = (task: ITasks) => {
     setSelectedTask(task);
     setShowEditModal(true);
-  }
+  };
 
   const handleOnDelete = async (id: number) => {
     await taskService.deleteTask({ id });
     setDeleteConfirmModal(false);
-    setDeleteConfirmModal(false);
     getAllTasks();
-  }
+  };
 
   useEffect(() => {
     getAllTasks();
   }, []);
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        backgroundColor: "#F3F4F6",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "40px 20px",
-        fontFamily: "sans-serif",
-      }}
-    >
-      <div style={{ textAlign: "center", marginBottom: "24px" }}>
-        <h1
-          style={{
-            fontSize: "36px",
-            fontWeight: 800,
-            color: "#111827",
-            margin: 0,
-          }}
-        >
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-10 font-sans">
+      <div className="text-center mb-6">
+        <h1 className="text-4xl font-extrabold text-gray-900">
           Task Management
         </h1>
-        <p style={{ color: "#6B7280", marginTop: "8px", fontSize: "16px" }}>
+        <p className="text-gray-500 mt-2 text-lg">
           Stay organized, stay productive
         </p>
       </div>
 
-      <div style={{ width: "100%", maxWidth: "600px", marginBottom: "32px" }}>
+      <div className="mb-6">
+        <StatsCard
+          title="Test"
+          value="This is value"
+          icon={TestTube}
+          variant="warning"
+        />
+      </div>
+
+      <div className="w-full max-w-md mb-8">
         <AddTask onAddedTask={getAllTasks} />
       </div>
 
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "600px",
-          backgroundColor: "#FFF",
-          padding: "16px",
-          borderRadius: "12px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-          maxHeight: "400px",
-          overflowY: "auto",
-        }}
-      >
-        {tasks?.map((value) => {
-          return (
-            <Tasks
-              title={value.title}
-              description={value.description}
-              priority={value.priority}
-              status={value.status}
-              dueDate={value.dueDate}
-              onEdit={() => handleOnEdit(value)}
-              onDelete={() => {
-                setDeleteConfirmModal(true);
-                setSelectedTask(value);
-              }}
-            />
-          );
-        })}
-        {delteConfirmModal && selectedTask && (
+      <div className="w-full max-w-md bg-white p-4 rounded-xl shadow-md flex flex-col gap-3 max-h-[400px] overflow-y-auto">
+        {tasks?.map((task) => (
+          <Tasks
+            key={task.id}
+            title={task.title}
+            description={task.description}
+            priority={task.priority}
+            status={task.status}
+            dueDate={task.dueDate}
+            onEdit={() => handleOnEdit(task)}
+            onDelete={() => {
+              setDeleteConfirmModal(true);
+              setSelectedTask(task);
+            }}
+          />
+        ))}
+
+        {deleteConfirmModal && selectedTask && (
           <ConfirmModal
-            isOpen={delteConfirmModal}
+            isOpen={deleteConfirmModal}
             onConfirm={() => handleOnDelete(selectedTask.id)}
             onCancel={() => setDeleteConfirmModal(false)}
           />
         )}
-        {showEditModal && selectedTask !== null && (
+
+        {showEditModal && selectedTask && (
           <EditModal
             task={selectedTask}
             onClose={() => setShowEditModal(false)}
