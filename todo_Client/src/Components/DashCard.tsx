@@ -23,16 +23,16 @@ export const StatsCard = ({
 }: StatsCardProps) => {
   const variantClasses = {
     default: "bg-card border-border",
-    success: "bg-gradient-to-br from-success/5 to-success/10 border-success/20",
-    warning: "bg-gradient-to-br from-warning/5 to-warning/10 border-warning/20",
-    primary: "bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20",
+    success: "bg-gradient-to-br from-green-200 to-green-100 border-green-200",
+    warning: "bg-gradient-to-br from-red-500 to-red-100 border-red-200",
+    primary: "bg-gradient-to-br from-blue-500 to-blue-100 border-blue-200",
   };
 
   const iconColors = {
     default: "text-muted-foreground",
-    success: "text-success",
-    warning: "text-warning",
-    primary: "text-primary",
+    success: "text-green-600",
+    warning: "text-red-600",
+    primary: "text-blue-600",
   };
 
   return (
@@ -69,7 +69,6 @@ export const StatsCard = ({
         </div>
       </div>
 
-      {/* Decorative gradient */}
       <div className="absolute -top-2 -right-2 w-20 h-20 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-xl" />
     </div>
   );

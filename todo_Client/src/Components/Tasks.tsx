@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Trash2, Edit, CalendarDays } from "lucide-react";
+import { Card, CardContent } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Checkbox } from "../components/ui/checkbox";
+import { Tooltip, TooltipProvider } from "../components/ui/tooltip";
 
 interface TasksProps {
   title: string;
@@ -11,7 +15,7 @@ interface TasksProps {
   onEdit: () => void;
 }
 
-function Tasks({
+const Tasks = ({
   title,
   description,
   priority,
@@ -19,92 +23,76 @@ function Tasks({
   dueDate,
   onDelete,
   onEdit,
-}: TasksProps) {
+}: TasksProps) => {
   const [completed, setCompleted] = useState(status === "Completed");
 
-  const priorityColors: { [key: string]: string } = {
-    High: "#EF4444",
-    Medium: "#F59E0B",
-    Low: "#10B981",
-    Default: "#6B7280",
+  const priorityVariants: {
+    [key: string]: "destructive" | "warning" | "success" | "secondary";
+  } = {
+    High: "destructive",
+    Medium: "warning",
+    Low: "success",
+    Default: "secondary",
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        backgroundColor: "#FFFFFF",
-        borderRadius: "12px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-        padding: "12px 16px",
-        gap: "6px",
-      }}
-    >
-      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-        <input
-          type="checkbox"
-          checked={completed}
-          onChange={() => setCompleted(!completed)}
-          style={{ width: "18px", height: "18px", cursor: "pointer" }}
-        />
+    <Card className="w-full text-black">
+      <CardContent className="flex flex-col gap-2 p-4">
+        <div className="flex items-center gap-3">
+          <Checkbox
+            checked={completed}
+            onCheckedChange={() => setCompleted(!completed)}
+            className="h-4 w-4"
+          />
 
-        <span
-          style={{
-            fontWeight: 600,
-            fontSize: "16px",
-            textDecoration: completed ? "line-through" : "none",
-            color: completed ? "#9CA3AF" : "#111827",
-            flex: 1,
-          }}
-        >
-          {title}
-        </span>
-
-        <span
-          style={{
-            backgroundColor: priorityColors[priority] || priorityColors.Default,
-            color: "#FFF",
-            padding: "4px 10px",
-            borderRadius: "9999px",
-            fontWeight: 600,
-            fontSize: "12px",
-            textTransform: "uppercase",
-          }}
-        >
-          {priority}
-        </span>
-
-        <div style={{ display: "flex", gap: "8px" }}>
-          <Edit size={18} style={{ cursor: "pointer" }} onClick={onEdit} />
-          <Trash2 size={18} style={{ cursor: "pointer" }} onClick={onDelete} />
-        </div>
-      </div>
-
-      {description && (
-        <p style={{ fontSize: "14px", color: "#4B5563", margin: 0 }}>
-          {description}
-        </p>
-      )}
-
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          fontSize: "13px",
-          color: "#6B7280",
-        }}
-      >
-        <span>Status: {status}</span>
-        {dueDate && (
-          <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-            <CalendarDays size={14} /> {dueDate}
+          <span
+            className={`flex-1 font-semibold text-base ${
+              completed
+                ? "line-through text-muted-foreground"
+                : "text-foreground"
+            }`}
+          >
+            {title}
           </span>
+
+          <Badge
+            variant={priorityVariants[priority] || "secondary"}
+            className="uppercase text-xs font-semibold"
+          >
+            {priority}
+          </Badge>
+
+          <div className="flex gap-2">
+            <TooltipProvider>
+              <Tooltip content="Edit Task">
+                <Edit size={18} className="cursor-pointer" onClick={onEdit} />
+              </Tooltip>
+              <Tooltip content="Delete Task">
+                <Trash2
+                  size={18}
+                  className="cursor-pointer"
+                  onClick={onDelete}
+                />
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
+
+        {description && (
+          <p className="text-sm text-muted-foreground m-0">{description}</p>
         )}
-      </div>
-    </div>
+
+        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+          <span>Status: {status}</span>
+          {dueDate && (
+            <span className="flex items-center gap-1">
+              <CalendarDays size={14} /> {dueDate}
+            </span>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
-}
+};
 
 export default Tasks;

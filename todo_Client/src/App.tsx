@@ -6,7 +6,12 @@ import { ITasks } from "./types/tasks.interface";
 import EditModal from "./Components/EditModal";
 import ConfirmModal from "./Components/ConfirmModal";
 import { StatsCard } from "./Components/DashCard";
-import { TestTube } from "lucide-react";
+import { Flame, ListTodo } from "lucide-react";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "./components/ui/popover";
 
 function App() {
   const [tasks, setTasks] = useState<ITasks[] | null>(null);
@@ -34,31 +39,55 @@ function App() {
     getAllTasks();
   }, []);
 
+  const dashBoardData = [
+    {
+      title: "Total Tasks",
+      value: tasks?.length,
+      icon: ListTodo,
+    },
+    {
+      title: "Streak",
+      value: 2,
+      icon: Flame,
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-10 font-sans">
-      <div className="text-center mb-6">
-        <h1 className="text-4xl font-extrabold text-gray-900">
-          Task Management
-        </h1>
-        <p className="text-gray-500 mt-2 text-lg">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-8 font-sans text-gray-100">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-extrabold text-black">TaskMaster Pro</h1>
+        <p className="text-gray-600 mt-2 text-lg">
           Stay organized, stay productive
         </p>
       </div>
 
-      <div className="mb-6">
-        <StatsCard
-          title="Test"
-          value="This is value"
-          icon={TestTube}
-          variant="warning"
-        />
+      <div className="mb-8 flex flex-wrap gap-6 justify-center items-stretch w-full max-w-4xl">
+        {dashBoardData.map((item, index) => (
+          <StatsCard
+            key={index}
+            title={item.title}
+            value={item.value || 0}
+            icon={item.icon}
+            variant="primary"
+            className="flex-1 min-w-[180px]"
+          />
+        ))}
       </div>
 
-      <div className="w-full max-w-md mb-8">
-        <AddTask onAddedTask={getAllTasks} />
+      <div className="w-full max-w-sm md:max-w-md mb-8 mx-auto">
+        <Popover>
+          <PopoverTrigger>
+            <button className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-xl shadow-lg hover:brightness-110 transition">
+              + Add Task
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="p-6 shadow-2xl rounded-xl border border-gray-700 w-72 md:w-80">
+            <AddTask onAddedTask={getAllTasks} />
+          </PopoverContent>
+        </Popover>
       </div>
 
-      <div className="w-full max-w-md bg-white p-4 rounded-xl shadow-md flex flex-col gap-3 max-h-[400px] overflow-y-auto">
+      <div className="w-full max-w-3xl p-6 rounded-2xl shadow-xl flex flex-col gap-4 max-h-[500px] overflow-y-auto">
         {tasks?.map((task) => (
           <Tasks
             key={task.id}

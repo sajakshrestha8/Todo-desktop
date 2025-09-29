@@ -1,18 +1,32 @@
 import { useState } from "react";
-import Button from "./Button";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import { Label } from "../components/ui/label";
 import { taskService } from "../services/tasks.service";
 
-const AddTask = ({ onAddedTask }:{ onAddedTask: () => void }) => {
+interface AddTaskProps {
+  onAddedTask: () => void;
+}
+
+const AddTask = ({ onAddedTask }: AddTaskProps) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"High" | "Medium" | "Low" | "">("High");
+  const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
   const [status, setStatus] = useState<
     "Pending" | "In Progress" | "Completed" | "Blocked"
   >("Pending");
   const [dueDate, setDueDate] = useState("");
 
   const handleAdd = async () => {
-    const addTask = await taskService.addTasks({
+    await taskService.addTasks({
       title,
       description,
       priority,
@@ -26,122 +40,91 @@ const AddTask = ({ onAddedTask }:{ onAddedTask: () => void }) => {
     setStatus("Pending");
     setDueDate("");
 
-    console.log(addTask);
     onAddedTask();
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "#ffffff",
-        padding: "24px",
-        borderRadius: "12px",
-        boxShadow: "0 6px 16px rgba(0,0,0,0.08)",
-        maxWidth: "600px",
-        margin: "24px auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px",
-      }}
-    >
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label style={{ fontWeight: 600 }}>Task Title</label>
-        <input
-          type="text"
+    <div className="bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto flex flex-col gap-6">
+      {/* Task Title */}
+      <div className="flex flex-col gap-1">
+        <Label htmlFor="title">Task Title</Label>
+        <Input
+          id="title"
+          placeholder="Enter task title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="Enter task title"
-          style={{
-            padding: "12px 14px",
-            border: "1px solid #E5E7EB",
-            borderRadius: "8px",
-            fontSize: "16px",
-            outline: "none",
-          }}
         />
       </div>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-        <label style={{ fontWeight: 600 }}>Description</label>
-        <textarea
+      {/* Description */}
+      <div className="flex flex-col gap-1">
+        <Label htmlFor="description">Description</Label>
+        <Textarea
+          id="description"
+          placeholder="Enter task description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter task description"
           rows={3}
-          style={{
-            padding: "12px 14px",
-            border: "1px solid #E5E7EB",
-            borderRadius: "8px",
-            fontSize: "15px",
-            resize: "none",
-            outline: "none",
-          }}
         />
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: "16px",
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <label style={{ fontWeight: 600 }}>Priority</label>
-          <select
+      {/* Priority, Status, Due Date */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="priority">Priority</Label>
+          <Select
             value={priority}
-            onChange={(e) =>
-              setPriority(e.target.value as "High" | "Medium" | "Low")
+            onValueChange={(val) =>
+              setPriority(val as "High" | "Medium" | "Low")
             }
-            style={{
-              padding: "10px 14px",
-              borderRadius: "8px",
-              border: "1px solid #E5E7EB",
-              fontSize: "15px",
-            }}
           >
-            <option value="High">High</option>
-            <option value="Medium">Medium</option>
-            <option value="Low">Low</option>
-          </select>
+            <SelectTrigger id="priority">
+              <SelectValue placeholder="Select priority" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="High">High</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <label style={{ fontWeight: 600 }}>Status</label>
-          <select
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="status">Status</Label>
+          <Select
             value={status}
-            onChange={(e) => setStatus(e.target.value as typeof status)}
-            style={{
-              padding: "10px 14px",
-              borderRadius: "8px",
-              border: "1px solid #E5E7EB",
-              fontSize: "15px",
-            }}
+            onValueChange={(val) =>
+              setStatus(
+                val as "Pending" | "In Progress" | "Completed" | "Blocked"
+              )
+            }
           >
-            <option value="Pending">Pending</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Completed">Completed</option>
-            <option value="Blocked">Blocked</option>
-          </select>
+            <SelectTrigger id="status">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Pending">Pending</SelectItem>
+              <SelectItem value="In Progress">In Progress</SelectItem>
+              <SelectItem value="Completed">Completed</SelectItem>
+              <SelectItem value="Blocked">Blocked</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          <label style={{ fontWeight: 600 }}>Due Date</label>
-          <input
+        <div className="flex flex-col gap-1">
+          <Label htmlFor="dueDate">Due Date</Label>
+          <Input
             type="date"
+            id="dueDate"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
-            style={{
-              padding: "10px 14px",
-              borderRadius: "8px",
-              border: "1px solid #E5E7EB",
-              fontSize: "15px",
-            }}
           />
         </div>
       </div>
 
-      <Button label="+ Add Task" variant="primary" onClick={handleAdd} />
+      <Button variant="default" onClick={handleAdd}>
+        + Add Task
+      </Button>
     </div>
   );
 };
