@@ -63,18 +63,12 @@ const Tasks = ({
           </Badge>
 
           <div className="flex gap-2">
-            <TooltipProvider>
-              <Tooltip content="Edit Task">
-                <Edit size={18} className="cursor-pointer" onClick={onEdit} />
-              </Tooltip>
-              <Tooltip content="Delete Task">
-                <Trash2
-                  size={18}
-                  className="cursor-pointer"
-                  onClick={onDelete}
-                />
-              </Tooltip>
-            </TooltipProvider>
+            <Edit size={18} className="cursor-pointer" onClick={onEdit} />
+            <Trash2
+              size={18}
+              className="cursor-pointer"
+              onClick={onDelete}
+            />
           </div>
         </div>
 
