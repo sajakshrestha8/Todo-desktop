@@ -1,85 +1,80 @@
 import { useState } from "react";
-import { Button } from "../components/ui/button";
-import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import { Label } from "../components/ui/label";
 import { taskService } from "../services/tasks.service";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Textarea } from "./ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import { IAddTask } from "../types/tasks.interface";
 
 interface AddTaskProps {
+  open: boolean;
+  onClose: () => void;
   onAddedTask: () => void;
 }
 
-const AddTask = ({ onAddedTask }: AddTaskProps) => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState<"High" | "Medium" | "Low">("High");
-  const [status, setStatus] = useState<
-    "Pending" | "In Progress" | "Completed" | "Blocked"
-  >("Pending");
-  const [dueDate, setDueDate] = useState("");
+const AddTaskDialog = ({ open, onClose, onAddedTask }: AddTaskProps) => {
+  const [formData, setFormData] = useState<IAddTask>({
+    title: "",
+    description: "",
+    priority: "High",
+    status: "Pending",
+    dueDate: "",
+  });
 
   const handleAdd = async () => {
-    await taskService.addTasks({
-      title,
-      description,
-      priority,
-      status,
-      dueDate,
-    });
+    try {
+      await taskService.addTasks(formData);
 
-    setTitle("");
-    setDescription("");
-    setPriority("High");
-    setStatus("Pending");
-    setDueDate("");
+      setFormData({
+        title: "",
+        description: "",
+        priority: "High",
+        status: "Pending",
+        dueDate: "",
+      });
 
-    onAddedTask();
+      onAddedTask();
+      onClose();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md max-w-xl mx-auto flex flex-col gap-6">
-      {/* Task Title */}
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="title">Task Title</Label>
-        <Input
-          id="title"
-          placeholder="Enter task title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-        />
-      </div>
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Add New Task</DialogTitle>
+        </DialogHeader>
 
-      {/* Description */}
-      <div className="flex flex-col gap-1">
-        <Label htmlFor="description">Description</Label>
-        <Textarea
-          id="description"
-          placeholder="Enter task description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          rows={3}
-        />
-      </div>
-
-      {/* Priority, Status, Due Date */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="priority">Priority</Label>
-          <Select
-            value={priority}
-            onValueChange={(val) =>
-              setPriority(val as "High" | "Medium" | "Low")
+        <div className="flex flex-col gap-4 py-2">
+          <Input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
             }
+            placeholder="Task Title"
+          />
+
+          <Textarea
+            name="description"
+            value={formData.description}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
+            placeholder="Description"
+            rows={3}
+          />
+
+          <Select
+            value={formData.priority}
+            onValueChange={(val) => setFormData({ ...formData, priority: val })}
           >
-            <SelectTrigger id="priority">
-              <SelectValue placeholder="Select priority" />
+            <SelectTrigger>
+              <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="High">High</SelectItem>
@@ -87,20 +82,13 @@ const AddTask = ({ onAddedTask }: AddTaskProps) => {
               <SelectItem value="Low">Low</SelectItem>
             </SelectContent>
           </Select>
-        </div>
 
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="status">Status</Label>
           <Select
-            value={status}
-            onValueChange={(val) =>
-              setStatus(
-                val as "Pending" | "In Progress" | "Completed" | "Blocked"
-              )
-            }
+            value={formData.status}
+            onValueChange={(val) => setFormData({ ...formData, status: val })}
           >
-            <SelectTrigger id="status">
-              <SelectValue placeholder="Select status" />
+            <SelectTrigger>
+              <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Pending">Pending</SelectItem>
@@ -109,24 +97,26 @@ const AddTask = ({ onAddedTask }: AddTaskProps) => {
               <SelectItem value="Blocked">Blocked</SelectItem>
             </SelectContent>
           </Select>
-        </div>
 
-        <div className="flex flex-col gap-1">
-          <Label htmlFor="dueDate">Due Date</Label>
           <Input
             type="date"
-            id="dueDate"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
+            name="dueDate"
+            value={formData.dueDate}
+            onChange={(e) =>
+              setFormData({ ...formData, dueDate: e.target.value })
+            }
           />
         </div>
-      </div>
 
-      <Button variant="default" onClick={handleAdd}>
-        + Add Task
-      </Button>
-    </div>
+        <DialogFooter className="flex justify-end gap-2">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button onClick={handleAdd}>Add Task</Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
-export default AddTask;
+export default AddTaskDialog;

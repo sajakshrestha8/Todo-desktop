@@ -1,6 +1,7 @@
 import { AxiosError } from "axios";
 import axiosInstance from "../api/Interceptor"
-import { ITasks, IUpdateTasks } from "../types/tasks.interface";
+import { IAddTask, IUpdateTasks } from "../types/tasks.interface";
+import { toast } from "react-toastify";
 
 export const taskService = {
   getAllTasks: async () => {
@@ -9,13 +10,13 @@ export const taskService = {
       return res.data.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response?.data);
+        toast.error(error.response?.data);
       }
-      console.log(error);
-    }
+      toast.error(error.message);
+    } 
   },
 
-  addTasks: async ({ title, description, priority, status, dueDate }: ITasks) => {
+  addTasks: async ({ title, description, priority, status, dueDate }: IAddTask) => {
     try {
       const { data } = await axiosInstance.post("task/addtask", {
         title,
@@ -25,31 +26,36 @@ export const taskService = {
         dueDate,
       });
       
-      alert(data.message);
-
+      toast.success(data.message);
     } catch (error) {
       if (error instanceof AxiosError) {
-        console.log(error.response?.data);
+        toast.error(error.response?.data);
       }
-      console.log(error);
+      toast.error(error.message);
     }
   },
 
   updateTask: async ({ id, formData }: {id: number, formData: IUpdateTasks}) => {
     try {
       const response = await axiosInstance.put(`task/updatetasks/${id}`, formData);
-      return response.data;
+      toast.success(response.data.message);
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      }
+      toast.error(error.response.data.message);
     }
   },
 
   deleteTask: async ({ id }: { id: number; }) => {
     try {
       const response = await axiosInstance.delete(`task/deletetasks/${id}`);
-      return response.data;
+      toast.success(response.data.message);
     } catch (error) {
-      console.log(error);
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      }
+      toast.error(error.message);
     }
   }
 };

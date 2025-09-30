@@ -85,9 +85,9 @@ function EditModal({ task, onClose, onUpdatedTask }: EditModalProps) {
               <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="low">Low</SelectItem>
-              <SelectItem value="medium">Medium</SelectItem>
-              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="High">High</SelectItem>
             </SelectContent>
           </Select>
 
@@ -99,9 +99,9 @@ function EditModal({ task, onClose, onUpdatedTask }: EditModalProps) {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="todo">To Do</SelectItem>
-              <SelectItem value="inprogress">In Progress</SelectItem>
-              <SelectItem value="done">Done</SelectItem>
+              <SelectItem value="Pending">Pending</SelectItem>
+              <SelectItem value="In Progress">In Progress</SelectItem>
+              <SelectItem value="Completed">Done</SelectItem>
             </SelectContent>
           </Select>
 

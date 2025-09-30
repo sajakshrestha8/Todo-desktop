@@ -3,7 +3,6 @@ const Task = require("../models/task");
 
 const TaskController = {
   AddTask: async (req, res) => {
-    console.log("Fuck this shit mannnnnnnnnn");
     try {
       console.log(req);
       const { title, description, priority, status, dueDate } = await req.body;
@@ -35,15 +34,21 @@ const TaskController = {
 
   EditTask: async (req, res) => {
     try {
-      const { id } = req.params;
+      const id = parseInt(req.params.id, 10);
+
+      console.log("-------id", id);
 
       if(!id) return;
 
       const { title, description, priority, status, dueDate } = req.body;
 
+      console.log("Request bodyyy -------->", req.body);
+
       if (!title || !description || !priority || !status || !dueDate) {
         return res.status(400).json({ message: "All fields are required." });
       }
+
+      console.log("Yeta bata chai return vayo jasto xa lamoo");
 
       const updatedTask = await Task.update(
         {
@@ -56,8 +61,11 @@ const TaskController = {
         { where: { id } }
       );
 
-      res.status(204).send({message: "Task Updated Successfully", updatedTask});
+      console.log({updatedTask});
+
+      res.status(200).send({message: "Task Updated Successfully", updatedTask});
     } catch (error) {
+      console.log("Lamo pakkai catch ma aako hunxa parxa randi ko ban");
       res.status(404).send({message: "Something went wrong", error});
     }
   },

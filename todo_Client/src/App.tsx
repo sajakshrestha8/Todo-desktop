@@ -7,17 +7,15 @@ import EditModal from "./Components/EditModal";
 import ConfirmModal from "./Components/ConfirmModal";
 import { StatsCard } from "./Components/DashCard";
 import { Flame, ListTodo } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./components/ui/popover";
+import { Button } from "./Components/ui/button";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [tasks, setTasks] = useState<ITasks[] | null>(null);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<ITasks | null>(null);
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
+  const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
 
   const getAllTasks = async () => {
     const data = await taskService.getAllTasks();
@@ -75,16 +73,14 @@ function App() {
       </div>
 
       <div className="w-full max-w-sm md:max-w-md mb-8 mx-auto">
-        <Popover>
-          <PopoverTrigger>
-            <button className="w-full py-3 bg-gradient-to-r from-purple-500 to-indigo-500 text-white font-semibold rounded-xl shadow-lg hover:brightness-110 transition">
-              + Add Task
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="p-6 shadow-2xl rounded-xl border border-gray-700 w-72 md:w-80">
-            <AddTask onAddedTask={getAllTasks} />
-          </PopoverContent>
-        </Popover>
+        <Button variant="default" onClick={() => setShowAddTaskModal(true)}>
+          + Add Task
+        </Button>
+        <AddTask
+          open={showAddTaskModal}
+          onClose={() => setShowAddTaskModal(false)}
+          onAddedTask={getAllTasks}
+        />
       </div>
 
       <div className="w-full max-w-3xl p-6 rounded-2xl shadow-xl flex flex-col gap-4 max-h-[500px] overflow-y-auto">
@@ -120,6 +116,18 @@ function App() {
           />
         )}
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
