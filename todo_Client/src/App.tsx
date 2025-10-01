@@ -9,6 +9,7 @@ import { StatsCard } from "./Components/DashCard";
 import { Flame, ListTodo } from "lucide-react";
 import { Button } from "./Components/ui/button";
 import { ToastContainer } from "react-toastify";
+import Navigation from "./Components/Navigation";
 
 function App() {
   const [tasks, setTasks] = useState<ITasks[] | null>(null);
@@ -51,83 +52,80 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-8 font-sans text-gray-100">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-extrabold text-black">TaskMaster Pro</h1>
-        <p className="text-gray-600 mt-2 text-lg">
-          Stay organized, stay productive
-        </p>
-      </div>
+    <div className="bg-gray-100 flex flex-col items-center p-6 font-sans text-gray-900 min-h-screen">
+      <div className="w-full max-w-3xl mx-auto">
+        <Navigation />
+        <div className="mb-8 flex flex-wrap gap-6 mt-8 justify-center items-stretch w-100">
+          {dashBoardData.map((item, index) => (
+            <StatsCard
+              key={index}
+              title={item.title}
+              value={item.value || 0}
+              icon={item.icon}
+              variant="primary"
+              className="flex-1 min-w-[180px]"
+            />
+          ))}
+        </div>
 
-      <div className="mb-8 flex flex-wrap gap-6 justify-center items-stretch w-full max-w-4xl">
-        {dashBoardData.map((item, index) => (
-          <StatsCard
-            key={index}
-            title={item.title}
-            value={item.value || 0}
-            icon={item.icon}
-            variant="primary"
-            className="flex-1 min-w-[180px]"
+        <div className="w-full max-w-md mb-8 mx-auto text-center">
+          <Button variant="default" onClick={() => setShowAddTaskModal(true)}>
+            + Add Task
+          </Button>
+          <AddTask
+            open={showAddTaskModal}
+            onClose={() => setShowAddTaskModal(false)}
+            onAddedTask={getAllTasks}
           />
-        ))}
-      </div>
+        </div>
 
-      <div className="w-full max-w-sm md:max-w-md mb-8 mx-auto">
-        <Button variant="default" onClick={() => setShowAddTaskModal(true)}>
-          + Add Task
-        </Button>
-        <AddTask
-          open={showAddTaskModal}
-          onClose={() => setShowAddTaskModal(false)}
-          onAddedTask={getAllTasks}
+        <div className="w-full max-w-3xl mx-auto p-6 rounded-2xl shadow-xl flex flex-col gap-4 max-h-[500px] overflow-y-auto bg-white">
+          {tasks?.map((task) => (
+            <Tasks
+              key={task.id}
+              title={task.title}
+              description={task.description}
+              priority={task.priority}
+              status={task.status}
+              dueDate={task.dueDate}
+              onEdit={() => handleOnEdit(task)}
+              onDelete={() => {
+                setDeleteConfirmModal(true);
+                setSelectedTask(task);
+              }}
+            />
+          ))}
+
+          {deleteConfirmModal && selectedTask && (
+            <ConfirmModal
+              isOpen={deleteConfirmModal}
+              onConfirm={() => handleOnDelete(selectedTask.id)}
+              onCancel={() => setDeleteConfirmModal(false)}
+            />
+          )}
+
+          {showEditModal && selectedTask && (
+            <EditModal
+              task={selectedTask}
+              onClose={() => setShowEditModal(false)}
+              onUpdatedTask={getAllTasks}
+            />
+          )}
+        </div>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
         />
       </div>
-
-      <div className="w-full max-w-3xl p-6 rounded-2xl shadow-xl flex flex-col gap-4 max-h-[500px] overflow-y-auto">
-        {tasks?.map((task) => (
-          <Tasks
-            key={task.id}
-            title={task.title}
-            description={task.description}
-            priority={task.priority}
-            status={task.status}
-            dueDate={task.dueDate}
-            onEdit={() => handleOnEdit(task)}
-            onDelete={() => {
-              setDeleteConfirmModal(true);
-              setSelectedTask(task);
-            }}
-          />
-        ))}
-
-        {deleteConfirmModal && selectedTask && (
-          <ConfirmModal
-            isOpen={deleteConfirmModal}
-            onConfirm={() => handleOnDelete(selectedTask.id)}
-            onCancel={() => setDeleteConfirmModal(false)}
-          />
-        )}
-
-        {showEditModal && selectedTask && (
-          <EditModal
-            task={selectedTask}
-            onClose={() => setShowEditModal(false)}
-            onUpdatedTask={getAllTasks}
-          />
-        )}
-      </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </div>
   );
 }
