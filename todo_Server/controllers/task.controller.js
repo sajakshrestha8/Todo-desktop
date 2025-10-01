@@ -92,9 +92,11 @@ const TaskController = {
       await Task.update({
         isCompleted: newStatus,
       }, { where: { id } } );
+
+      const message = newStatus === true ? "Marked as task completed" : "Unmarked as task not completed";
       res
         .status(200)
-        .send({ message: "Task toggled Successfully", isCompleted: newStatus });
+        .send({ message: message, isCompleted: newStatus });
     } catch (error) {
       console.log(error);
     }

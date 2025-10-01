@@ -3,7 +3,7 @@ import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Checkbox } from "../components/ui/checkbox";
 import { getDaysLeft } from "../utils/task.utils";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+// import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { taskService } from "../services/tasks.service";
 import { useState } from "react";
 
@@ -18,7 +18,7 @@ interface TasksProps {
   onEdit: () => void;
   points: number;
   completed: boolean;
-  setCompleted: (value: boolean) => void;
+  setTotalPoints: (value: string) => void;
 }
 
 const Tasks = ({
@@ -26,12 +26,13 @@ const Tasks = ({
   id,
   description,
   priority,
-  status,
+  // status,
   dueDate,
   onDelete,
   onEdit,
   points,
   completed,
+  setTotalPoints
 }: TasksProps) => {
   const [isCompleted, setIsCompleted] = useState<boolean>(completed);
 
@@ -52,6 +53,11 @@ const Tasks = ({
 
   const daysLeft = getDaysLeft(dueDate);
 
+  const updateTotalPoints = (updatedPoint: number) => {
+    localStorage.setItem("totalPoints", updatedPoint.toString());
+    setTotalPoints(updatedPoint.toString());
+  } 
+
   const handleCheckboxToggle = async() => {
     try {
       const response = await isTaskCompleted({ id });
@@ -64,15 +70,9 @@ const Tasks = ({
       if (!totalPointsInString) return;
 
       if (taskCompletedNow) {
-        localStorage.setItem(
-          "totalPoints",
-          (totalPoints + points).toString()
-        );
+        updateTotalPoints(totalPoints + points);
       } else {
-        localStorage.setItem(
-          "totalPoints",
-          (totalPoints - points).toString()
-        );
+        updateTotalPoints(totalPoints - points);
       }
       setIsCompleted(taskCompletedNow);
     } catch (error) {
@@ -136,7 +136,9 @@ const Tasks = ({
               <CalendarDays size={14} /> {daysLeft}
             </Badge>
           )}
-          <DropdownMenu>
+
+          {/* Currenlty status has been commented as it is not need for now. The status is being handled by the checkbox */}
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Badge
                 className={`flex items-center gap-1 cursor-pointer rounded-full px-3 py-1 ${
@@ -161,7 +163,7 @@ const Tasks = ({
                 Completed
               </DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
         </div>
       </CardContent>
     </Card>

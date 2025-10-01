@@ -3,12 +3,11 @@ import { useState } from "react";
 import { Badge } from "./ui/badge";
 
 interface IProps {
-  completedTask: boolean;
+  totalPoints: string | null;
 }
 
-function Navigation({completedTask} : IProps) {
+function Navigation({totalPoints}: IProps) {
   const [userStats, setUserStats] = useState({
-    totalPoints: localStorage.getItem("totalPoints"),
     streak: 7,
     level: 1,
     completedToday: 0,
@@ -34,7 +33,7 @@ function Navigation({completedTask} : IProps) {
             <div className="flex items-center gap-3">
               <Badge variant="outline" className="gap-2">
                 <Star color="orange" className="h-3 w-3" />
-                {userStats.totalPoints} pts
+                {totalPoints} pts
               </Badge>
               {/* <ThemeToggle /> */}
             </div>

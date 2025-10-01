@@ -17,7 +17,7 @@ function App() {
   const [selectedTask, setSelectedTask] = useState<ITasks | null>(null);
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
   const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
-  const [completed, setCompleted] = useState<boolean>(false);
+  const [totalPoints, setTotalPoints] = useState<string | null>(localStorage.getItem("totalPoints"));
 
   const getAllTasks = async () => {
     const data = await taskService.getAllTasks();
@@ -52,6 +52,8 @@ function App() {
     },
   ];
 
+  console.log("Total Points", totalPoints);
+
   useEffect(() => {
     if (tasks) {
       const totalPoints = tasks.reduce((sum, task) => {
@@ -67,7 +69,7 @@ function App() {
   return (
     <div className="bg-gray-100 flex flex-col items-center p-6 font-sans text-gray-900 min-h-screen">
       <div className="w-full max-w-3xl mx-auto">
-        <Navigation completedTask={completed} />
+        <Navigation totalPoints={totalPoints} />
         <div className="mb-8 flex flex-wrap gap-6 mt-8 justify-center items-stretch w-100">
           {dashBoardData.map((item, index) => (
             <StatsCard
@@ -111,8 +113,7 @@ function App() {
                 task.priority === "High" ? 25 : task.priority === "Medium" ? 15 : 5
               }
               completed={task.isCompleted}
-              setCompleted={setCompleted}
-              getAllTasks={getAllTasks}
+              setTotalPoints={setTotalPoints}              
             />
           ))}
 
