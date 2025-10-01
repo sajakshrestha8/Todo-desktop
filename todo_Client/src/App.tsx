@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import AddTask from "./Components/AddTask";
 import Tasks from "./Components/Tasks";
 import { taskService } from "./services/tasks.service";
 import { ITasks } from "./types/tasks.interface";
@@ -8,16 +7,20 @@ import ConfirmModal from "./Components/ConfirmModal";
 import { StatsCard } from "./Components/DashCard";
 import { Flame, ListTodo } from "lucide-react";
 import { Button } from "./Components/ui/button";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Navigation from "./Components/Navigation";
+import { Input } from "./Components/ui/input";
 
 function App() {
-  const [tasks, setTasks] = useState<ITasks[] | null>(null);
+  const [tasks, setTasks] = useState<ITasks[]>([]);
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [selectedTask, setSelectedTask] = useState<ITasks | null>(null);
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<boolean>(false);
-  const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
+  // const [showAddTaskModal, setShowAddTaskModal] = useState<boolean>(false);
   const [totalPoints, setTotalPoints] = useState<string | null>(localStorage.getItem("totalPoints"));
+  const [newTask, setNewTask] = useState<string>("");
+
+  const { addTasks } = taskService;
 
   const getAllTasks = async () => {
     const data = await taskService.getAllTasks();
@@ -66,6 +69,23 @@ function App() {
     }
   }, [tasks]);
 
+  const handleAddTask = async () => {
+    try {
+      const response = await addTasks({ title: newTask });
+      toast.success(
+        <div>
+          {response}
+          <br />
+          Don’t forget to update it for maximum productivity 🚀
+        </div>
+      );
+      getAllTasks();
+      setNewTask("");
+    } catch (error) {
+      toast.error(error.message);
+    }
+  }
+
   return (
     <div className="bg-gray-100 flex flex-col items-center p-6 font-sans text-gray-900 min-h-screen">
       <div className="w-full max-w-3xl mx-auto">
@@ -77,21 +97,27 @@ function App() {
               title={item.title}
               value={item.value || 0}
               icon={item.icon}
-              variant="primary"
+              variant={item.title === "Total Tasks" ? "primary" : "success"}
               className="flex-1 min-w-[180px]"
             />
           ))}
         </div>
 
-        <div className="w-full max-w-md mb-8 mx-auto text-center">
-          <Button variant="default" onClick={() => setShowAddTaskModal(true)}>
+        <div className="w-full flex items-center gap-4 mb-8">
+          <Input
+            placeholder="Add your task"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            className="flex-1"
+          />
+          <Button variant="default" onClick={handleAddTask}>
             + Add Task
           </Button>
-          <AddTask
+          {/* <AddTask
             open={showAddTaskModal}
             onClose={() => setShowAddTaskModal(false)}
             onAddedTask={getAllTasks}
-          />
+          /> */}
         </div>
 
         <div className="w-full max-w-3xl mx-auto p-6 rounded-2xl shadow-xl flex flex-col gap-4 max-h-[500px] overflow-y-auto bg-white">
@@ -110,10 +136,14 @@ function App() {
                 setSelectedTask(task);
               }}
               points={
-                task.priority === "High" ? 25 : task.priority === "Medium" ? 15 : 5
+                task.priority === "High"
+                  ? 25
+                  : task.priority === "Medium"
+                  ? 15
+                  : 5
               }
               completed={task.isCompleted}
-              setTotalPoints={setTotalPoints}              
+              setTotalPoints={setTotalPoints}
             />
           ))}
 

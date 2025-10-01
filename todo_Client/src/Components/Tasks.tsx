@@ -6,6 +6,7 @@ import { getDaysLeft } from "../utils/task.utils";
 // import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { taskService } from "../services/tasks.service";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 interface TasksProps {
   title: string;
@@ -61,6 +62,13 @@ const Tasks = ({
   const handleCheckboxToggle = async() => {
     try {
       const response = await isTaskCompleted({ id });
+      if(response.message) toast.success(
+        <div>
+          {response.message}
+          <br />
+          Congratulation you earned {points} points, Keep it up
+        </div>
+      );
       const taskCompletedNow = response.isCompleted;
 
       const totalPointsInString = localStorage.getItem("totalPoints");

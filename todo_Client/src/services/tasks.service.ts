@@ -16,17 +16,13 @@ export const taskService = {
     } 
   },
 
-  addTasks: async ({ title, description, priority, status, dueDate }: IAddTask) => {
+  addTasks: async ({ title }: { title: string }) => {
     try {
       const { data } = await axiosInstance.post("task/addtask", {
         title,
-        description,
-        priority,
-        status,
-        dueDate,
       });
       
-      toast.success(data.message);
+      return data.message;
     } catch (error) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data);
@@ -62,10 +58,9 @@ export const taskService = {
   isTaskCompleted: async ({ id } : {id: number; }) => {
     try {
       const response = await axiosInstance.put(`task/toggleSelect/${id}`);
-      toast.success(response.data.message);
       return response.data;
     } catch (error) {
-            if (error instanceof AxiosError) {
+      if (error instanceof AxiosError) {
         toast.error(error.response?.data);
       }
       toast.error(error.message);

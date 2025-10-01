@@ -4,20 +4,19 @@ const Task = require("../models/task");
 const TaskController = {
   AddTask: async (req, res) => {
     try {
-      console.log(req);
-      const { title, description, priority, status, dueDate } = await req.body;
+      const { title } = await req.body;
 
       const createdTask = await Task.create({
         title,
-        description,
-        priority,
-        status,
-        dueDate,
+        // description,
+        // priority,
+        // status,
+        // dueDate,
       });
 
       res
         .status(200)
-        .send({ message: "Task added successfully", data: createdTask });
+        .send({ message: "Task added successfully 🎉", data: createdTask });
     } catch (error) {
       console.log(error);
     }
@@ -93,7 +92,7 @@ const TaskController = {
         isCompleted: newStatus,
       }, { where: { id } } );
 
-      const message = newStatus === true ? "Marked as task completed" : "Unmarked as task not completed";
+      const message = newStatus === true && "Task Completed 🎉";
       res
         .status(200)
         .send({ message: message, isCompleted: newStatus });
