@@ -36,19 +36,24 @@ const TaskController = {
     try {
       const id = parseInt(req.params.id, 10);
 
-      console.log("-------id", id);
-
       if(!id) return;
 
       const { title, description, priority, status, dueDate } = req.body;
-
-      console.log("Request bodyyy -------->", req.body);
 
       if (!title || !description || !priority || !status || !dueDate) {
         return res.status(400).json({ message: "All fields are required." });
       }
 
-      console.log("Yeta bata chai return vayo jasto xa lamoo");
+      if (status === "Completed") await Task.update({
+          title,
+          description,
+          priority,
+          status,
+          dueDate,
+          isCompleted: true,
+        },
+        { where: { id } }
+      )
 
       const updatedTask = await Task.update(
         {
@@ -70,6 +75,31 @@ const TaskController = {
     }
   },
 
+  ToggleIsSelected: async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      console.log(id);
+
+      if(!id) throw new Error("Task not found");
+
+      const taskData = await Task.findByPk(id);
+      if (!taskData) throw new Error("Task not found");
+
+      const currentStatus = taskData.isCompleted;
+      const newStatus = !currentStatus;
+
+      await Task.update({
+        isCompleted: newStatus,
+      }, { where: { id } } );
+      res
+        .status(200)
+        .send({ message: "Task toggled Successfully", isCompleted: newStatus });
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
   DeleteTask: async (req,res) => {
     try {
       const { id } = req.params;
@@ -85,6 +115,8 @@ const TaskController = {
       res.send({message: error})
     }
   }
+
+
 };
 
 module.exports = TaskController;

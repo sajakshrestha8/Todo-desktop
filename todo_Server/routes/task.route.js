@@ -6,5 +6,6 @@ router.post("/addtask", TaskController.AddTask);
 router.get("/alltasks", TaskController.GetAllTask);
 router.put("/updatetasks/:id", TaskController.EditTask);
 router.delete("/deletetasks/:id", TaskController.DeleteTask);
+router.put("/toggleSelect/:id", TaskController.ToggleIsSelected);
 
 module.exports = router;

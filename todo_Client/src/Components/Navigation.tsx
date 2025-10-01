@@ -2,13 +2,18 @@ import { Star, Target } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "./ui/badge";
 
-function Navigation() {
+interface IProps {
+  completedTask: boolean;
+}
+
+function Navigation({completedTask} : IProps) {
   const [userStats, setUserStats] = useState({
-    totalPoints: 0,
+    totalPoints: localStorage.getItem("totalPoints"),
     streak: 7,
     level: 1,
     completedToday: 0,
   });
+  
   return (
     <div>
       <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-10">

@@ -5,6 +5,7 @@ export interface ITasks {
     priority: string;
     status: string;
     dueDate: string;
+    isCompleted: boolean;
 }
 
 export interface IUpdateTasks {

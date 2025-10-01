@@ -39,6 +39,12 @@ const Task = dbConnection.define(
       type: DataTypes.DATE,
       allowNull: true,
     },
+
+    isCompleted: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    }
   },
   {
     timestamps: true,

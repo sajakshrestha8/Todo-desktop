@@ -1,31 +1,41 @@
-import { useState } from "react";
 import { Trash2, Edit, CalendarDays, Star, ChevronDown } from "lucide-react";
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Checkbox } from "../components/ui/checkbox";
 import { getDaysLeft } from "../utils/task.utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { taskService } from "../services/tasks.service";
+import { useState } from "react";
 
 interface TasksProps {
   title: string;
+  id: number;
   description?: string;
   priority: string;
   status: string;
   dueDate?: string;
   onDelete: () => void;
   onEdit: () => void;
+  points: number;
+  completed: boolean;
+  setCompleted: (value: boolean) => void;
 }
 
 const Tasks = ({
   title,
+  id,
   description,
   priority,
   status,
   dueDate,
   onDelete,
   onEdit,
+  points,
+  completed,
 }: TasksProps) => {
-  const [completed, setCompleted] = useState(status === "Completed");
+  const [isCompleted, setIsCompleted] = useState<boolean>(completed);
+
+  const { isTaskCompleted } = taskService;
 
   const priorityVariants: {
     [key: string]: "destructive" | "warning" | "default" | "lowPriority";
@@ -42,19 +52,47 @@ const Tasks = ({
 
   const daysLeft = getDaysLeft(dueDate);
 
+  const handleCheckboxToggle = async() => {
+    try {
+      const response = await isTaskCompleted({ id });
+      const taskCompletedNow = response.isCompleted;
+
+      const totalPointsInString = localStorage.getItem("totalPoints");
+      const totalPoints = totalPointsInString
+        ? parseInt(totalPointsInString, 10)
+        : 0;
+      if (!totalPointsInString) return;
+
+      if (taskCompletedNow) {
+        localStorage.setItem(
+          "totalPoints",
+          (totalPoints + points).toString()
+        );
+      } else {
+        localStorage.setItem(
+          "totalPoints",
+          (totalPoints - points).toString()
+        );
+      }
+      setIsCompleted(taskCompletedNow);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <Card className="w-full rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 border border-gray-800">
       <CardContent className="flex flex-col gap-3 p-5">
         <div className="flex items-center gap-3">
           <Checkbox
-            checked={completed}
-            onCheckedChange={() => setCompleted(!completed)}
+            checked={isCompleted}
+            onCheckedChange={handleCheckboxToggle}
             className="h-5 w-5 rounded-full border-gray-400 data-[state=checked]:bg-green-500"
           />
 
           <span
             className={`flex-1 font-semibold text-lg ${
-              completed ? "line-through text-gray-500" : "text-black"
+              isCompleted ? "line-through text-gray-500" : "text-black"
             }`}
           >
             {title}
@@ -88,7 +126,7 @@ const Tasks = ({
         <div className="flex items-center gap-2 text-xs text-gray-900 pl-8">
           <Badge className="text-xs gap-1 rounded-full" variant="startpoints">
             <Star color="orange" className="h-3 w-3" />
-            <label>15 pts</label>
+            <label>{points} pts</label>
           </Badge>
           {dueDate && daysLeft && (
             <Badge
@@ -102,7 +140,7 @@ const Tasks = ({
             <DropdownMenuTrigger asChild>
               <Badge
                 className={`flex items-center gap-1 cursor-pointer rounded-full px-3 py-1 ${
-                  completed
+                  isCompleted
                     ? "bg-green-500/20 text-green-400"
                     : "bg-yellow-500/20 text-yellow-400"
                 }`}

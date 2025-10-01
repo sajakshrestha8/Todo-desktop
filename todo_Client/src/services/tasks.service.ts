@@ -57,5 +57,18 @@ export const taskService = {
       }
       toast.error(error.message);
     }
+  },
+
+  isTaskCompleted: async ({ id } : {id: number; }) => {
+    try {
+      const response = await axiosInstance.put(`task/toggleSelect/${id}`);
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error) {
+            if (error instanceof AxiosError) {
+        toast.error(error.response?.data);
+      }
+      toast.error(error.message);
+    }
   }
 };
